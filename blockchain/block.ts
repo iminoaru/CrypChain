@@ -25,7 +25,10 @@ class Block {
                     data: ${this.data}`)
     }
 
-    
+    static generateHash(lastHash: Block, data: any): string {
+        return sha256(Date.now() + lastHash.hash + data)
+    }
+
     // first block of the blockchain
     static genesisBlock() : Block {
         return new this(672004, '-none-', 'firstHashOfBC', []) // data for first block
@@ -34,10 +37,12 @@ class Block {
 
     static mineBlock(lastBlock: Block, data: any) : Block {
         const timestamp: number = Date.now()
-        const hash: string = sha256(lastBlock.hash + timestamp + data)
+        const hash: string = Block.generateHash(lastBlock, data)
 
         return new this(timestamp, lastBlock.hash, hash, data)
     }
+
+
 
 
 }
