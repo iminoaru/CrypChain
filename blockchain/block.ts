@@ -25,8 +25,8 @@ class Block {
                     data: ${this.data}`)
     }
 
-    static generateHash(lastHash: Block, data: any): string {
-        return sha256(Date.now() + lastHash.hash + data)
+    static generateHash(lastHash: Block, data: any, timestamp: number = Date.now()): string {
+        return sha256(lastHash.hash + data + timestamp)
     }
 
     // first block of the blockchain
