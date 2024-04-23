@@ -16,6 +16,7 @@ class Block {
 
     }
 
+
     print() : void {
         console.log(`-BLOCK-
                     timestamp: ${this.timestamp}
@@ -24,10 +25,21 @@ class Block {
                     data: ${this.data}`)
     }
 
+    
     // first block of the blockchain
     static genesisBlock() : Block {
         return new this(672004, '-none-', 'firstHashOfBC', []) // data for first block
     }
+
+
+    static mineBlock(lastBlock: Block, data: any) : Block {
+        const timestamp: number = Date.now()
+        const hash: string = sha256(lastBlock.hash + timestamp + data)
+
+        return new this(timestamp, lastBlock.hash, hash, data)
+    }
+
+
 }
 
 export default Block
