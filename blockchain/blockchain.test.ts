@@ -39,5 +39,39 @@ describe('Blockchain', () => {
 
             expect(blockchain.isValidBlockchain(blockchain.chain)).toBe(false); // Checking the validity of the blockchain
         });
+
+
     });
+
+    describe('replaceChain', () => {
+        it('does not replace the chain if the new chain is shorter', () => {
+            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
+            blockchain.addBlock('block 1');
+            blockchain.addBlock('block 2');
+
+            blockchain.replaceChain(newChain);
+
+            expect(blockchain.chain.length).toBe(3);
+        });
+
+        it('does not replace the chain if the new chain is invalid', () => {
+            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
+            newChain[1].hash = 'incorrect hash';
+
+            blockchain.replaceChain(newChain);
+
+            expect(blockchain.chain.length).toBe(1);
+        });
+
+        it('replaces the chain if the new chain is longer and valid', () => {
+            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
+            newChain.push(Block.mineBlock(newChain[1], 'block 2'));
+
+            blockchain.replaceChain(newChain);
+
+            expect(blockchain.chain).toEqual(newChain);
+        });
+
+    })
+
 });
