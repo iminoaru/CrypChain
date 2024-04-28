@@ -46,9 +46,21 @@ class P2P {
 
     handleMessages(socket: WebSocket) {
         socket.on('message' , sms => {
+            const data = JSON.parse(sms.toString())
 
-            console.log(sms.toString())
+            this.blockchain.replaceChain(data)
         })
+    }
+
+    syncChain() {
+        this.sockets.forEach(socket => {
+            socket.send(JSON.stringify(this.blockchain.chain))
+
+        })
+    }
+
+    sendChain(socket: WebSocket) {
+        socket.send(JSON.stringify(this.blockchain.chain))
     }
 }
 

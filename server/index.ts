@@ -27,6 +27,8 @@ app.post('/blockchain/mine' , (req , res) => {
 
     bc.addBlock(block)
 
+    p2pServer.syncChain()
+
     res.redirect('/blockchain')
 })
 
