@@ -29,6 +29,10 @@ class P2P {
     connectSocket(socket: WebSocket) {
         this.sockets.push(socket)
         console.log('Socket connected')
+
+        this.handleMessages(socket)
+
+        socket.send(JSON.stringify(this.blockchain.chain))
     }
 
 
@@ -37,6 +41,13 @@ class P2P {
             const socket = new WebSocket(p)
 
             socket.on('open', () => this.connectSocket(socket))
+        })
+    }
+
+    handleMessages(socket: WebSocket) {
+        socket.on('message' , sms => {
+
+            console.log(sms.toString())
         })
     }
 }
