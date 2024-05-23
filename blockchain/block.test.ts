@@ -9,7 +9,7 @@ describe('Block', () => {
             const data = 'test data';
             const newBlock = Block.mineBlock(lastBlock, data);
 
-            expect(newBlock.hash.substring(0, DIFF)).toEqual('0'.repeat(DIFF));
+            expect(newBlock.hash.substring(0, newBlock.difficulty)).toEqual('0'.repeat(newBlock.difficulty));
         });
 
         it('increments the nonce until a valid hash is found', () => {
@@ -26,6 +26,23 @@ describe('Block', () => {
             const newBlock = Block.mineBlock(lastBlock, data);
 
             expect(newBlock.timestamp).toBeGreaterThan(lastBlock.timestamp);
+        });
+    });
+    describe('adjustDifficulty', () => {
+        it('increases difficulty for quickly mined blocks', () => {
+            const block = Block.mineBlock(Block.genesisBlock(), 'test data');
+            block.timestamp = block.timestamp - 1000; // Simulate a block that was mined too quickly
+            const fastBlock = Block.mineBlock(block, 'test data');
+
+            expect(fastBlock.difficulty).toBeGreaterThan(block.difficulty);
+        });
+
+        it('decreases difficulty for slowly mined blocks', () => {
+            const block = Block.mineBlock(Block.genesisBlock(), 'test data');
+            block.timestamp = block.timestamp + 1000; // Simulate a block that was mined too slowly
+            const slowBlock = Block.mineBlock(block, 'test data');
+
+            expect(slowBlock.difficulty).toBeLessThan(block.difficulty);
         });
     });
 });

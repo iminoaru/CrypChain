@@ -66,7 +66,7 @@ describe('Blockchain', () => {
         it('replaces the chain if the new chain is longer and valid', () => {
             const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
             newChain.push(Block.mineBlock(newChain[1], 'block 2'));
-
+            newChain.push(Block.mineBlock(newChain[2], 'block 3'));
             blockchain.replaceChain(newChain);
 
             expect(blockchain.chain).toEqual(newChain);

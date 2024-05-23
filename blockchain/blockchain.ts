@@ -30,7 +30,7 @@ class Blockchain {
             if(currBlock.lastHash !== prevBlock.hash) return false
 
             // Checks (by regenerating the hash) if the data of currBlock is tampered by a miner
-            let regeneratedHash = Block.generateHash(prevBlock, currBlock.data, currBlock.timestamp)
+            let regeneratedHash = Block.generateHash(prevBlock, currBlock.data, currBlock.nonce, currBlock.difficulty, currBlock.timestamp)
             if(regeneratedHash !== currBlock.hash) return false
         }
 
