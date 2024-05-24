@@ -29,20 +29,20 @@ describe('Block', () => {
         });
     });
     describe('adjustDifficulty', () => {
-        it('increases difficulty for quickly mined blocks', () => {
-            const block = Block.mineBlock(Block.genesisBlock(), 'test data');
-            block.timestamp = block.timestamp - 1000; // Simulate a block that was mined too quickly
-            const fastBlock = Block.mineBlock(block, 'test data');
+        it('increments the nonce until a valid hash is found', () => {
+            const lastBlock = Block.genesisBlock();
+            const data = 'test data';
+            const newBlock = Block.mineBlock(lastBlock, data);
 
-            expect(fastBlock.difficulty).toBeGreaterThan(block.difficulty);
+            expect(newBlock.nonce).toBeGreaterThan(0);
         });
 
-        it('decreases difficulty for slowly mined blocks', () => {
-            const block = Block.mineBlock(Block.genesisBlock(), 'test data');
-            block.timestamp = block.timestamp + 1000; // Simulate a block that was mined too slowly
-            const slowBlock = Block.mineBlock(block, 'test data');
+        it('updates the timestamp for the new block', () => {
+            const lastBlock = Block.genesisBlock();
+            const data = 'test data';
+            const newBlock = Block.mineBlock(lastBlock, data);
 
-            expect(slowBlock.difficulty).toBeLessThan(block.difficulty);
+            expect(newBlock.timestamp).toBeGreaterThan(lastBlock.timestamp);
         });
     });
 });

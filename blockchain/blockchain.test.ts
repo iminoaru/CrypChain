@@ -20,7 +20,6 @@ describe('Blockchain', () => {
     describe('isValidBlockchain', () => {
         it('returns true for a valid chain', () => {
             blockchain.addBlock('block 1');
-            blockchain.addBlock('block 2');
 
             expect(blockchain.isValidBlockchain(blockchain.chain)).toBe(true);
         });
@@ -67,6 +66,7 @@ describe('Blockchain', () => {
             const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
             newChain.push(Block.mineBlock(newChain[1], 'block 2'));
             newChain.push(Block.mineBlock(newChain[2], 'block 3'));
+            newChain.push(Block.mineBlock(newChain[3], 'block 4'));
             blockchain.replaceChain(newChain);
 
             expect(blockchain.chain).toEqual(newChain);

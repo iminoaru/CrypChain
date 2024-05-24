@@ -1,8 +1,8 @@
 import { sha256 } from 'js-sha256';
 
 // difficulty for PoW
-const DIFF = 3 // Default difficulty
-const MINE_TIME = 1000 // 5 seconds
+const DIFF: number = 3 // Default difficulty
+const MINE_TIME = 3000 // 3 seconds
 
 class Block {
 
@@ -68,7 +68,7 @@ class Block {
         if (lastBlock.timestamp + MINE_TIME > currentTime) {
             return difficulty + 1
         } else {
-            return difficulty - 1
+            return Math.max(1, difficulty - 1)
         }
     }
 
