@@ -1,6 +1,8 @@
 import Transaction from './transactions';
 import Wallet from './index';
 
+
+
 describe('Transaction', () => {
     let transaction: Transaction;
     let wallet: Wallet;
@@ -57,5 +59,28 @@ describe('Transaction', () => {
                 expect(Transaction.verifyTransaction(transaction)).toBe(false);
             });
 
+        describe('and updating the transaction', () => {
+            let nextAmount: number, nextRecipient: string;
+
+            beforeEach(() => {
+                nextAmount = 20;
+                nextRecipient = 'next-persons-address'
+                transaction = transaction.update(wallet, nextRecipient, nextAmount);
+
+            });
+
+            // it('outputs an increased amount subtracted from the sender', () => {
+            //
+            //     expect(transaction.outputs.find(output => output.address === wallet.publicKey).amount)
+            //         .toEqual(wallet.balance - amount - nextAmount);
+            // });
+
+            it('outputs an amount for the next recipient', () => {
+
+                expect(transaction.outputs.find(output => output.address === nextRecipient).amount)
+                    .toEqual(nextAmount);
+            });
         });
+    });
+
     });
