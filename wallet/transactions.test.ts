@@ -1,7 +1,7 @@
 import Transaction from './transactions';
 import Wallet from './index';
 
-
+const MINING_REWARD = 20
 
 describe('Transaction', () => {
     let transaction: Transaction;
@@ -83,4 +83,15 @@ describe('Transaction', () => {
         });
     });
 
+    describe('creating a reward transaction', () => {
+        beforeEach(() => {
+            transaction = Transaction.rewardTransaction(wallet, Wallet.blockchainWallet());
+        });
+
+        it(`reward the miner's wallet`, () => {
+            expect(transaction.outputs.find(output => output.address === wallet.publicKey).amount)
+                .toEqual(MINING_REWARD);
+        });
+
     });
+});

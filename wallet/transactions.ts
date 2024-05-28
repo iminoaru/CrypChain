@@ -3,6 +3,8 @@ import { sha256 } from 'js-sha256';
 var EC = require('elliptic').ec;
 var ec = new EC('secp256k1');
 
+const MINING_REWARD = 20
+
 class Transaction {
 
     id: string
@@ -30,6 +32,15 @@ class Transaction {
         return this;
     }
 
+    static transactionWithOutputs(senderWallet: any, outputs: any[]): any {
+
+        const transaction = new this();
+        transaction.outputs.push(...outputs);
+        Transaction.signTransaction(transaction, senderWallet);
+        return transaction;
+
+    }
+
     static newTransaction(senderWallet: any, recipient: string, amount: number): any {
         if (amount > senderWallet.balance) {
             console.log(`Amount: ${amount} exceeds balance. (newTransaction)`);
@@ -45,7 +56,15 @@ class Transaction {
 
         Transaction.signTransaction(transaction, senderWallet)
 
-        return transaction;
+        return Transaction.transactionWithOutputs(senderWallet, transaction.outputs);
+
+    }
+
+    static rewardTransaction(minerWallet: any, blockchainWallet: any): any { // blockchainWallet will approve (sign) the transaction, not the miner
+        return Transaction.transactionWithOutputs(blockchainWallet, [{
+            amount: MINING_REWARD, address: minerWallet.publicKey
+        }]);
+
     }
 
     static signTransaction(transaction: Transaction, senderWallet: any) {

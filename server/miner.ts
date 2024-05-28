@@ -21,9 +21,7 @@ class Miner {
     mine() {
         const validTransactions = this.transactionPool.validTransactions()
 
-        validTransactions.push(
-            this.wallet.rewardTransaction(this.wallet, this.wallet.blockchainWallet())
-        )
+
 
     }
 }
