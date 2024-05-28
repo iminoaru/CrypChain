@@ -14,7 +14,7 @@ class Wallet {
 
 
     constructor () {
-        this.balance = 100
+        this.balance = 500
         this.keyPair = ec.genKeyPair()
         this.publicKey = this.keyPair.getPublic().encode('hex')
     }

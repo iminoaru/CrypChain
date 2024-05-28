@@ -39,7 +39,17 @@ app.post('/mine' , (req , res) => {
 })
 
 app.get('/transactions' , (req , res) => {
+
     res.json(tp.transactions)
+})
+
+app.post('/transfer' , (req , res) => {
+
+    const { recipient , amount } = req.body
+    const transaction = wallet.createTransaction(recipient , amount , tp)
+
+
+    res.redirect('/transactions')
 })
 
 app.listen(PORT, () => {
