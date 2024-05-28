@@ -39,7 +39,6 @@ app.post('/mine' , (req , res) => {
 })
 
 app.get('/transactions' , (req , res) => {
-
     res.json(tp.transactions)
 })
 
@@ -51,6 +50,10 @@ app.post('/transfer' , (req , res) => {
     p2pServer.broadcastTransaction(transaction) //broadcasted across the network
 
     res.redirect('/transactions')
+})
+
+app.get('/public-key' , (req , res) => {
+    res.json({ publicKey: wallet.publicKey })
 })
 
 app.listen(PORT, () => {

@@ -25,6 +25,27 @@ class TransactionPool {
     existingTransaction(address: string): any {
         return this.transactions.find(tr => tr.input.address === address)
     }
+
+    validTransactions() {
+
+        return this.transactions.filter(transaction => {
+            const outputTotal = transaction.outputs.reduce((total, output) => {
+                return output.amount + total
+            }, 0)
+
+            if (transaction.input.amount !== outputTotal) {
+                console.log(`Invalid transaction from ${transaction.input.address} (input amount != output total` )
+                return
+            }
+
+            if (!Transaction.verifyTransaction(transaction)) {
+                console.log(`Invalid signature from ${transaction.input.address} (transaction not verified)`)
+                return
+            }
+
+            return transaction
+        })
+    }
 }
 
 export default TransactionPool
