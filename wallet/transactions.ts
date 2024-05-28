@@ -1,5 +1,7 @@
 import { v1 as uuidV1 } from 'uuid';
 import { sha256 } from 'js-sha256';
+var EC = require('elliptic').ec;
+var ec = new EC('secp256k1');
 
 class Transaction {
 
@@ -39,6 +41,34 @@ class Transaction {
             signature: senderWallet.sign(sha256(transaction.outputs))
 
         }
+    }
+
+    static verifySignature(publicKey: string, signature: any, dataHash: any) {
+        return ec.keyFromPublic(publicKey, 'hex').verify(dataHash, signature)
+    }
+
+    // static verifyTransaction(transaction: Transaction) {
+    //     return this.verifySignature(transaction.input.address, transaction.input.signature, sha256(transaction.outputs))
+    // }
+
+    static verifyTransaction(transaction: Transaction) {
+        const outputTotal = transaction.outputs.reduce((total, output) => total + output.amount, 0);
+
+        if (transaction.input.amount !== outputTotal) {
+            console.log(`Invalid transaction from ${transaction.input.address}.`);
+            return false;
+        }
+
+        if (!Transaction.verifySignature(
+            transaction.input.address,
+            transaction.input.signature,
+            sha256(transaction.outputs)
+        )) {
+            console.log(`Invalid signature from ${transaction.input.address}.`);
+            return false;
+        }
+
+        return true;
     }
 }
 
