@@ -20,6 +20,11 @@ class TransactionPool {
             this.transactions.push(transaction)
         }
     }
+
+
+    existingTransaction(address: string): any {
+        return this.transactions.find(tr => tr.input.address === address)
+    }
 }
 
 export default TransactionPool
