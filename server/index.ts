@@ -4,19 +4,25 @@ import bodyParser from "body-parser";
 import blockchain from "../blockchain/blockchain";
 import P2P from "./peerToPeer";
 
+import TransactionPool from "../wallet/transactionPool";
+import Wallet from "../wallet/index";
+
 const app = express();
-const PORT = process.env.PORT || 3210;
+const PORT = process.env.PORT || 3100
 
 app.use(bodyParser.json())
 
 const bc: blockchain = new blockchain();
+const wallet: Wallet = new Wallet();
+const tp: TransactionPool = new TransactionPool();
+
 const p2pServer: P2P = new P2P(bc)
 
 app.get('/blockchain' , (req , res) => {
     res.json(bc.chain)
 })
 
-app.post('/blockchain/mine' , (req , res) => {
+app.post('/mine' , (req , res) => {
     const block: any = req.body.data
 
     if(!block) {
@@ -30,6 +36,10 @@ app.post('/blockchain/mine' , (req , res) => {
     p2pServer.syncChain()
 
     res.redirect('/blockchain')
+})
+
+app.get('/transactions' , (req , res) => {
+    res.json(tp.transactions)
 })
 
 app.listen(PORT, () => {
