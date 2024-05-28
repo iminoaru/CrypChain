@@ -16,7 +16,7 @@ const bc: blockchain = new blockchain();
 const wallet: Wallet = new Wallet();
 const tp: TransactionPool = new TransactionPool();
 
-const p2pServer: P2P = new P2P(bc)
+const p2pServer: P2P = new P2P(bc, tp)
 
 app.get('/blockchain' , (req , res) => {
     res.json(bc.chain)
@@ -48,6 +48,7 @@ app.post('/transfer' , (req , res) => {
     const { recipient , amount } = req.body
     const transaction = wallet.createTransaction(recipient , amount , tp)
 
+    p2pServer.broadcastTransaction(transaction) //broadcasted across the network
 
     res.redirect('/transactions')
 })

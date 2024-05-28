@@ -1,18 +1,27 @@
 import  WebSocket  from 'ws'
 import blockchain from "../blockchain/blockchain";
+import TransactionPool from "../wallet/transactionPool";
+import Transaction from "../wallet/transactions";
 
 const p2pPORT = Number(process.env.p2pPORT) || 5001
 
 // ws://localhost:5001,ws://localhost:5002
 const peers: string[] = process.env.PEERS ? process.env.PEERS.split(',') : []
 
+const SMS_TYPES = {
+    chain: 'CHAIN',
+    transaction: 'TRANSACTION'
+}
+
 class P2P {
 
     public blockchain: blockchain
+    public transactionPool: TransactionPool
     public sockets: WebSocket[]
 
-    constructor(blockchain: blockchain) {
+    constructor(blockchain: blockchain , transactionPool: TransactionPool) {
         this.blockchain = blockchain
+        this.transactionPool = transactionPool
         this.sockets = []
     }
 
@@ -48,7 +57,15 @@ class P2P {
         socket.on('message' , sms => {
             const data = JSON.parse(sms.toString())
 
-            this.blockchain.replaceChain(data)
+            if(data.type == SMS_TYPES.chain) {
+                this.blockchain.replaceChain(data.chain)
+            }
+
+            else if(data.type == SMS_TYPES.transaction) {
+                this.transactionPool.updateOrAddTransaction(data.transaction)
+            }
+
+
         })
     }
 
@@ -60,11 +77,26 @@ class P2P {
     }
 
     sendChain(socket: WebSocket) {
-        socket.send(JSON.stringify(this.blockchain.chain))
+        socket.send(JSON.stringify(
+            {type: SMS_TYPES.chain,
+                chain: this.blockchain.chain}))
+    }
+
+    sendTransaction(socket: WebSocket , transaction: Transaction) {
+        socket.send(JSON.stringify(
+            {type: SMS_TYPES.transaction,
+                transaction: transaction}))
+    }
+
+    broadcastTransaction(transaction: Transaction) {
+
+        this.sockets.forEach(socket => {
+            this.sendTransaction(socket , transaction)
+        })
     }
 }
 
 export default P2P
 
 // 1 -> npm run dev (starts first server)
-// 2 -> PORT=3211 p2pPORT=5002 PEERS=ws://localhost:5001 npm run dev (starts second server)
+// 2 -> PORT=3100 p2pPORT=5002 PEERS=ws://localhost:5001 npm run dev (starts second server)
