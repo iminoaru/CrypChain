@@ -22,6 +22,10 @@ class Wallet {
                 publicKey : ${this.publicKey.toString()}
                 balance   : ${this.balance}`
     }
+
+    sign(data: any) {
+        return this.keyPair.sign(data)
+    }
 }
 
 export default Wallet

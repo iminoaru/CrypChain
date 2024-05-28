@@ -1,6 +1,7 @@
 import { v1 as uuidV1 } from 'uuid';
+import { sha256 } from 'js-sha256';
 
-class Transactions {
+class Transaction {
 
     id: string
     input: any
@@ -25,8 +26,20 @@ class Transactions {
             { amount, address: recipient }
         ]);
 
+        Transaction.signTransaction(transaction, senderWallet)
+
         return transaction;
+    }
+
+    static signTransaction(transaction: Transaction, senderWallet: any) {
+        transaction.input = {
+            timestamp: Date.now(),
+            amount: senderWallet.balance,
+            address: senderWallet.publicKey,
+            signature: senderWallet.sign(sha256(transaction.outputs))
+
+        }
     }
 }
 
-export default Transactions
+export default Transaction

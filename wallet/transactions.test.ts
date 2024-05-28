@@ -43,5 +43,9 @@ describe('Transaction', () => {
                     transaction = newTransaction;
                 }).toThrow('Transaction creation failed');
             });
+
+            it('inputs the balance of the wallet', () => {
+                expect(transaction.input.amount).toEqual(wallet.balance);
+            });
         });
-    });t
+    });
