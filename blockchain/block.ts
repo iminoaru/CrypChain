@@ -39,7 +39,7 @@ class Block {
 
     // first block of the blockchain
     static genesisBlock() : Block {
-        return new this(672004, '-none-', 'firstHashOfBC', "", 0 , DIFF) // data for first block
+        return new this(672004, '-none-', 'firstHashOfBC', "", 0 , 3) // data for first block
     }
 
 
@@ -54,7 +54,7 @@ class Block {
             nonce++
             timestamp = Date.now()
             difficulty = Block.adjustDifficulty(lastBlock, timestamp)
-            hash = Block.generateHash(lastBlock, data, nonce, timestamp)
+            hash = Block.generateHash(lastBlock, data, nonce, difficulty, timestamp)
         } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty))
 
         return new this(timestamp, lastBlock.hash, hash, data ,nonce, difficulty)

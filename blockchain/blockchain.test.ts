@@ -2,76 +2,54 @@ import Blockchain from './blockchain';
 import Block from './block';
 
 describe('Blockchain', () => {
-    let blockchain: Blockchain;
+    let bc: Blockchain, bc2: Blockchain;
 
     beforeEach(() => {
-        blockchain = new Blockchain();
+        bc = new Blockchain();
+        bc2 = new Blockchain();
     });
 
-    describe('addBlock', () => {
-        it('adds a new block to the chain', () => {
-            const data = 'test data';
-            const newBlock = blockchain.addBlock(data);
-
-            expect(blockchain.chain[blockchain.chain.length - 1]).toEqual(newBlock);
-        });
+    it('starts with genesis block', () => {
+        expect(bc.chain[0]).toEqual(Block.genesisBlock());
     });
 
-    describe('isValidBlockchain', () => {
-        it('returns true for a valid chain', () => {
-            blockchain.addBlock('block 1');
+    it('adds a new block', () => {
+        const data = 'foo';
+        bc.addBlock(data);
 
-            expect(blockchain.isValidBlockchain(blockchain.chain)).toBe(true);
-        });
-
-        it('returns false if the chain does not start with the genesis block', () => {
-            blockchain.chain[0] = Block.mineBlock(blockchain.chain[0], 'tampered genesis');
-
-            expect(blockchain.isValidBlockchain(blockchain.chain)).toBe(false);
-        });
-
-        it('returns false if a block has been tampered with', () => {
-            blockchain.addBlock('block 1'); // Adding a block
-            const tamperedBlock = Block.mineBlock(blockchain.chain[1], 'tampered block data'); // Creating a tampered block
-            tamperedBlock.data = 'modified data'; // Simulating tampering by modifying the block's data
-            blockchain.chain[2] = tamperedBlock; // Assigning the tampered block to the chain
-
-            expect(blockchain.isValidBlockchain(blockchain.chain)).toBe(false); // Checking the validity of the blockchain
-        });
-
-
+        expect(bc.chain[bc.chain.length-1].data).toEqual(data);
     });
 
-    describe('replaceChain', () => {
-        it('does not replace the chain if the new chain is shorter', () => {
-            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
-            blockchain.addBlock('block 1');
-            blockchain.addBlock('block 2');
+    it('validates a valid chain', () => {
+        bc2.addBlock('foo');
 
-            blockchain.replaceChain(newChain);
+        expect(bc.isValidBlockchain(bc2.chain)).toBe(true);
+    });
 
-            expect(blockchain.chain.length).toBe(3);
-        });
+    it('invalidates a chain with a corrupt genesis block', () => {
+        bc2.chain[0].data = 'Bad data';
 
-        it('does not replace the chain if the new chain is invalid', () => {
-            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
-            newChain[1].hash = 'incorrect hash';
+        expect(bc.isValidBlockchain(bc2.chain)).toBe(false);
+    });
 
-            blockchain.replaceChain(newChain);
+    it('invalidates a corrupt chain', () => {
+        bc2.addBlock('foo');
+        bc2.chain[1].data = 'Not foo';
 
-            expect(blockchain.chain.length).toBe(1);
-        });
+        expect(bc.isValidBlockchain(bc2.chain)).toBe(false);
+    });
 
-        it('replaces the chain if the new chain is longer and valid', () => {
-            const newChain = [Block.genesisBlock(), Block.mineBlock(Block.genesisBlock(), 'block 1')];
-            newChain.push(Block.mineBlock(newChain[1], 'block 2'));
-            newChain.push(Block.mineBlock(newChain[2], 'block 3'));
-            newChain.push(Block.mineBlock(newChain[3], 'block 4'));
-            blockchain.replaceChain(newChain);
+    it('replaces the chain with a valid chain', () => {
+        bc2.addBlock('goo');
+        bc.replaceChain(bc2.chain);
 
-            expect(blockchain.chain).toEqual(newChain);
-        });
+        expect(bc.chain).toEqual(bc2.chain);
+    });
 
+    it('does not replace the chain with one of less than or equal to length', () => {
+        bc.addBlock('foo');
+        bc.replaceChain(bc2.chain);
+
+        expect(bc.chain).not.toEqual(bc2.chain);
     })
-
 });

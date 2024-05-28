@@ -21,23 +21,23 @@ class Blockchain {
 
 
     isValidBlockchain(chain: Block[]): boolean {
-        if(JSON.stringify(Block.genesisBlock()) !== JSON.stringify(chain[0])) return false // If first block is not the genesis block
+        if((JSON.stringify(chain[0])) !== (JSON.stringify(Block.genesisBlock())) ) return false // If first block is not the genesis block
 
         for(let i = 1 ; i < chain.length ; i++){
             let currBlock = chain[i]
             let prevBlock = chain[i-1]
 
-            if(currBlock.lastHash !== prevBlock.hash) return false
+            let generatedHash = Block.generateHash(prevBlock, currBlock.data, currBlock.nonce, currBlock.difficulty, currBlock.timestamp);
 
-            // Checks (by regenerating the hash) if the data of currBlock is tampered by a miner
-            let regeneratedHash = Block.generateHash(prevBlock, currBlock.data, currBlock.nonce, currBlock.difficulty, currBlock.timestamp);
-            if (regeneratedHash !== currBlock.hash) {
-                console.log('Invalid hash at block', i);
+            if(currBlock.lastHash !== prevBlock.hash || currBlock.hash !== generatedHash) {
+                console.log(`Block ${i} hash mismatch:`);
+                console.log(`Current hash: ${currBlock.hash}`);
+                console.log(`Generated hash: ${generatedHash}`);
                 return false;
             }
         }
 
-        return true
+        return true;
     }
 
 
@@ -47,7 +47,7 @@ class Blockchain {
             return
         }
 
-        if (this.isValidBlockchain(newChain) == false) {
+        if (!this.isValidBlockchain(newChain)) {
             console.log('Received chain is not valid')
             return
         } else {
