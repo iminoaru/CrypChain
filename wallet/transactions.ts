@@ -30,7 +30,7 @@ class Transaction {
         return this;
     }
 
-    static newTransaction(senderWallet: any, recipient: string, amount: number) {
+    static newTransaction(senderWallet: any, recipient: string, amount: number): any {
         if (amount > senderWallet.balance) {
             console.log(`Amount: ${amount} exceeds balance.`);
             return;
