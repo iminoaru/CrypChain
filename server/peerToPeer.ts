@@ -10,7 +10,8 @@ const peers: string[] = process.env.PEERS ? process.env.PEERS.split(',') : []
 
 const SMS_TYPES = {
     chain: 'CHAIN',
-    transaction: 'TRANSACTION'
+    transaction: 'TRANSACTION',
+    clearTransactions: 'CLEAR_TRANSACTIONS'
 }
 
 class P2P {
@@ -65,6 +66,10 @@ class P2P {
                 this.transactionPool.updateOrAddTransaction(data.transaction)
             }
 
+            else if(data.type == SMS_TYPES.clearTransactions) {
+                this.transactionPool.clear()
+            }
+
 
         })
     }
@@ -92,6 +97,15 @@ class P2P {
 
         this.sockets.forEach(socket => {
             this.sendTransaction(socket , transaction)
+        })
+    }
+
+    broadcastClearTransactions() {
+
+        this.sockets.forEach(socket => {
+            socket.send(JSON.stringify(
+                {type: SMS_TYPES.clearTransactions}
+            ))
         })
     }
 }
