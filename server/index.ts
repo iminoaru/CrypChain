@@ -7,6 +7,8 @@ import P2P from "./peerToPeer";
 import TransactionPool from "../wallet/transactionPool";
 import Wallet from "../wallet/index";
 
+import Miner from "./miner";
+
 const app = express();
 const PORT = process.env.PORT || 3100
 
@@ -17,6 +19,9 @@ const wallet: Wallet = new Wallet();
 const tp: TransactionPool = new TransactionPool();
 
 const p2pServer: P2P = new P2P(bc, tp)
+
+const miner: Miner = new Miner(bc, tp, wallet, p2pServer)
+
 
 app.get('/blockchain' , (req , res) => {
     res.json(bc.chain)
@@ -54,6 +59,15 @@ app.post('/transfer' , (req , res) => {
 
 app.get('/public-key' , (req , res) => {
     res.json({ publicKey: wallet.publicKey })
+})
+
+app.get('/mine-transactions' , (req , res) => {
+    const block = miner.mine()
+
+    console.log(`New block added (mined): ${block.toString()}`)
+
+    res.redirect('/blockchain')
+
 })
 
 app.listen(PORT, () => {

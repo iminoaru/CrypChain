@@ -3,6 +3,7 @@ import TransactionPool from "../wallet/transactionPool";
 import Wallet from "../wallet";
 import P2P from "./peerToPeer";
 import Transaction from "../wallet/transactions";
+import Block from "../blockchain/block";
 
 
 class Miner {
@@ -19,7 +20,7 @@ class Miner {
         this.p2pServer = p2pServer
     }
 
-    mine() {
+    mine(): Block {
         const validTransactions = this.transactionPool.validTransactions()
         validTransactions.push(Transaction.rewardTransaction(this.wallet, Wallet.blockchainWallet()))
 
