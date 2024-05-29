@@ -2,16 +2,18 @@ import Transaction from './transactions';
 import Wallet from './index';
 //import Blockchain from './blockchain';
 import TransactionPool from './transactionPool';
+import Blockchain from "../blockchain/blockchain";
 
 
 describe('TransactionPool', () => {
-    let tp : TransactionPool, wallet : Wallet, transaction : Transaction;
+    let tp : TransactionPool, wallet : Wallet, transaction : Transaction, bc: Blockchain;
 
     beforeEach(() => {
         tp = new TransactionPool();
         wallet = new Wallet();
+        bc = new Blockchain();
 
-        transaction = wallet.createTransaction('r4nd-4dr355', 30,  tp);
+        transaction = wallet.createTransaction('r4nd-4dr355', 30, bc, tp);
 
     });
 
@@ -41,7 +43,7 @@ describe('TransactionPool', () => {
             validTransactions = [...tp.transactions];
             for (let i=0; i<6; i++) {
                 wallet = new Wallet();
-                transaction = wallet.createTransaction('r4nd-4dr355', 30, tp);
+                transaction = wallet.createTransaction('r4nd-4dr355', 30, bc, tp);
                 if (i%2==0) {
                     transaction.input.amount = 9999;
                 } else {
