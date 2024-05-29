@@ -1,15 +1,14 @@
 # CrypChain
 
-CrypChain is a simple blockchain implementation written in TypeScript. It includes a basic proof-of-work (PoW) consensus algorithm, transaction system, and peer-to-peer network. This project is intended for educational purposes.
+CrypChain is a simple blockchain and cryptocurrency implementation written in TypeScript. It includes a basic proof-of-work consensus algorithm (hashcash), transaction system, mining and peer-to-peer network.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+## Setup locally
 
 ### Prerequisites
 
 - Node.js
 - npm
+- Typescript
 
 ### Installation
 
@@ -36,7 +35,7 @@ To run the tests for the blockchain implementation, use the following command:
 npm test
 ```
 
-## Usage
+## Running the server
 
 To start the server, use the following command:
 
@@ -91,9 +90,9 @@ CrypChain uses a proof-of-work consensus algorithm to secure the network. Each b
 
 The CrypChain network is a peer-to-peer network where each node has a complete copy of the blockchain. When a new block is mined, it is broadcasted to all the nodes in the network.
 
-## Built With
+## Tech used
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [Express](https://expressjs.com/)
-- [Socket.IO](https://socket.io/)
-- 
+- TypeScript
+- Express
+- Socket.IO
+- Object Oriented Programming principles
